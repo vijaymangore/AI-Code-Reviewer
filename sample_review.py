@@ -2,14 +2,31 @@ import streamlit as st
 import google.generativeai as ai
 import os
 
-# Read API key securely using 'with' statement to ensure file is closed
-with open(r"C:/Users/ADMIN/Desktop/genai/.streamlit/.streamlit.txt", "r") as f:
-    key = f.read().strip()  # Read the key and remove any leading/trailing spaces
-    print(key)
+# Set up your API Key either in code or via an environment variable
+# Option 1: Directly set the API key in the code (Replace 'YOUR_API_KEY' with your actual API key)
+ai.configure(api_key="AIzaSyCuS40-NgoTWEVHQzFQ3rB2QKm05XdUM38")
 
-ai.configure(api_key=key)
+# Option 2: Alternatively, you can set the GOOGLE_API_KEY environment variable in your system or terminal
+# Example to set environment variable manually (if you prefer not to hardcode the API key in the script):
+# os.environ["GOOGLE_API_KEY"] = "YOUR_API_KEY"
+# genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 
-# System prompt for the AI Code Reviewer
+# Example usage of the API to list available models
+try:
+    # List available models from the Generative AI service
+    available_models = ai.list_models()
+    
+    if not available_models:
+        print("No models found.")
+    else:
+        # Iterate and print the available models
+        for model in available_models:
+            print(f"Model Name: {model.name}")
+            
+except Exception as e:
+    print(f"Error occurred: {e}")
+
+# Define the System Prompt for the AI Code Reviewer
 sys_prompt = """You are an AI Code Reviewer. 
 When given a piece of Python code, analyze it carefully to identify any bugs or errors.
 Provide suggestions to fix them. Your response must follow this structured format:
@@ -22,11 +39,11 @@ Always maintain proper formatting and clarity in your response and to the point 
 # List available models (optional, just for debugging purposes)
 available_models = ai.list_models()
 for model in available_models:
-    print(model.name)  # Debugging available models
+    print(model.name)  # Display available models for debugging (you can remove this later)
 
-# Define the Generative AI model (moved outside of loop)
+# Define the Generative AI model
 model = ai.GenerativeModel(
-    model_name="models/gemini-1.5-flash",  
+    model_name="models/gemini-1.5-flash",  # Use the correct model name
     system_instruction=sys_prompt,
 )
 
@@ -52,6 +69,6 @@ if btn_click:
             # Generate content using the AI model
             response = model.generate_content(user_prompt)
             st.markdown("## Code Review")  # Display the "Code Review" heading
-            st.markdown(response.text)  # Use Markdown for formatted response
+            st.markdown(response.text)  # Use Markdown to display the generated review
         except Exception as e:
             st.error(f"An error occurred: {e}")
