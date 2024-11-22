@@ -1,16 +1,16 @@
 import streamlit as st
 import google.generativeai as ai
 import os
-
+secrete_key = open('key.txt')
+key = secrete_key.read()
+ai.configure(api_key=key)
+# Make a note of it very important (You could use your API key by using following methods)
 # Set up your API Key either in code or via an environment variable
 # Option 1: Directly set the API key in the code (Replace 'YOUR_API_KEY' with your actual API key)
-ai.configure(api_key="AIzaSyCuS40-NgoTWEVHQzFQ3rB2QKm05XdUM38")
-
 # Option 2: Alternatively, you can set the GOOGLE_API_KEY environment variable in your system or terminal
 # Example to set environment variable manually (if you prefer not to hardcode the API key in the script):
 # os.environ["GOOGLE_API_KEY"] = "YOUR_API_KEY"
 # genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
-
 # Example usage of the API to list available models
 try:
     # List available models from the Generative AI service
